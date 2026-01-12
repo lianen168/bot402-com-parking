@@ -14,6 +14,7 @@
             --dark: #0a0e17;
             --light: #f8f9fa;
             --neon: #00ff9d;
+            --spaceship: #7c3aed;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -45,15 +46,13 @@
                 text-shadow: 
                     0 0 15px var(--primary),
                     0 0 30px var(--primary),
-                    0 0 45px var(--secondary),
-                    0 0 60px var(--secondary);
+                    0 0 45px var(--secondary);
             }
             50% { 
                 text-shadow: 
                     0 0 20px var(--neon),
                     0 0 40px var(--neon),
-                    0 0 60px var(--primary),
-                    0 0 80px var(--primary);
+                    0 0 60px var(--primary);
             }
         }
         
@@ -75,6 +74,11 @@
         @keyframes scanLine {
             0% { top: 0%; }
             100% { top: 100%; }
+        }
+        
+        @keyframes borderGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(124, 58, 237, 0.5); }
         }
 
         header {
@@ -112,6 +116,23 @@
             font-family: 'Exo 2', sans-serif;
             letter-spacing: -1px;
             position: relative;
+            text-shadow: 
+                2px 2px 4px rgba(0, 0, 0, 0.5),
+                -1px -1px 0 rgba(255, 255, 255, 0.1);
+            filter: drop-shadow(0 0 10px rgba(58, 134, 255, 0.3));
+        }
+        
+        .domain-main::before {
+            content: 'bot402.com';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            color: rgba(0, 0, 0, 0.2);
+            z-index: -1;
+            background: none;
+            -webkit-background-clip: initial;
+            background-clip: initial;
+            -webkit-text-fill-color: initial;
         }
         
         .domain-badge {
@@ -186,7 +207,7 @@
             gap: 3rem;
         }
         
-        .info-box, .applications-box {
+        .info-box, .applications-box, .purchase-box {
             background: rgba(16, 22, 40, 0.85);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(58, 134, 255, 0.25);
@@ -200,7 +221,14 @@
             overflow: hidden;
         }
         
-        .info-box::before, .applications-box::before {
+        .purchase-box {
+            grid-column: 1 / -1;
+            background: rgba(16, 22, 40, 0.9);
+            border: 2px solid var(--spaceship);
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+        
+        .info-box::before, .applications-box::before, .purchase-box::before {
             content: '';
             position: absolute;
             top: 0;
@@ -210,6 +238,10 @@
             background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
             background-size: 200% 100%;
             animation: dataFlow 2s linear infinite;
+        }
+        
+        .purchase-box::before {
+            background: linear-gradient(90deg, var(--spaceship), var(--primary), var(--spaceship));
         }
         
         .info-box:hover, .applications-box:hover {
@@ -358,51 +390,159 @@
             text-align: center;
         }
         
-        /* CTA区域 */
-        .cta-section {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(58, 134, 255, 0.1), rgba(131, 56, 236, 0.1));
-            padding: 3rem;
-            border-radius: 20px;
+        /* 购买区域 */
+        .price-display {
             text-align: center;
-            margin-top: 3rem;
-            border: 2px solid rgba(0, 255, 157, 0.3);
-            position: relative;
-            overflow: hidden;
+            margin: 2rem 0;
         }
         
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 255, 157, 0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-        
-        .price {
-            font-size: 4rem;
+        .full-price {
+            font-size: 4.5rem;
             font-weight: 900;
             color: white;
-            margin: 1.5rem 0;
+            margin: 1rem 0;
             font-family: 'Exo 2', sans-serif;
         }
         
-        .price span {
+        .full-price span {
             background: linear-gradient(135deg, var(--neon), var(--primary));
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
         
+        .payment-plan {
+            font-size: 1.8rem;
+            color: var(--neon);
+            margin: 1.5rem 0;
+            font-weight: 600;
+        }
+        
+        .payment-breakdown {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+        
+        .payment-phase {
+            background: rgba(124, 58, 237, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid rgba(124, 58, 237, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .payment-phase:hover {
+            transform: translateY(-5px);
+            border-color: var(--spaceship);
+            background: rgba(124, 58, 237, 0.2);
+        }
+        
+        .phase-number {
+            font-size: 1.2rem;
+            color: #aaccff;
+            margin-bottom: 0.5rem;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .phase-amount {
+            font-size: 1.8rem;
+            color: var(--neon);
+            font-weight: 800;
+            font-family: 'Exo 2', sans-serif;
+        }
+        
+        /* Spaceship交易框 */
+        .spaceship-box {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(58, 134, 255, 0.1));
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px solid rgba(124, 58, 237, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .spaceship-box::before {
+            content: '🚀';
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            font-size: 3rem;
+            opacity: 0.2;
+        }
+        
+        .spaceship-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .spaceship-header i {
+            color: var(--spaceship);
+            font-size: 2rem;
+        }
+        
+        .spaceship-title {
+            font-size: 1.8rem;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .spaceship-link {
+            display: block;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--spaceship);
+            font-family: 'Roboto Mono', monospace;
+            word-break: break-all;
+            transition: all 0.3s;
+        }
+        
+        .spaceship-link:hover {
+            background: rgba(0, 0, 0, 0.5);
+            transform: translateX(5px);
+        }
+        
+        .spaceship-link a {
+            color: var(--neon);
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+        
+        .spaceship-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .spaceship-features {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .spaceship-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #aaccff;
+        }
+        
+        .spaceship-feature i {
+            color: var(--spaceship);
+        }
+        
         .contact-info {
             background: rgba(255, 255, 255, 0.05);
             padding: 1.5rem;
             border-radius: 15px;
-            margin: 2rem auto;
-            max-width: 600px;
+            margin: 2rem 0;
             border-left: 4px solid var(--accent);
         }
         
@@ -428,7 +568,7 @@
             font-size: 1.3rem;
             font-weight: 700;
             border-radius: 12px;
-            margin-top: 1.5rem;
+            margin: 1rem 0.5rem;
             transition: all 0.3s;
             border: none;
             cursor: pointer;
@@ -438,10 +578,25 @@
             overflow: hidden;
         }
         
+        .spaceship-button {
+            background: linear-gradient(135deg, var(--spaceship), #9d5bff);
+        }
+        
         .cta-button:hover {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(58, 134, 255, 0.4);
+        }
+        
+        .spaceship-button:hover {
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2rem 0;
         }
         
         .trust-badges {
@@ -488,22 +643,27 @@
         @media (max-width: 1100px) {
             main { grid-template-columns: 1fr; }
             .applications-grid { grid-template-columns: repeat(2, 1fr); }
+            .payment-breakdown { grid-template-columns: repeat(2, 1fr); }
         }
         
         @media (max-width: 768px) {
-            .domain-main { font-size: 3.5rem; }
+            .domain-main { font-size: 4rem; }
             .domain-badge { font-size: 0.9rem; padding: 0.3rem 1rem; right: -15px; }
             .protocol-tag { font-size: 1.3rem; padding: 0.6rem 1.5rem; }
             .tagline { font-size: 1.2rem; }
             .applications-grid { grid-template-columns: 1fr; }
-            .price { font-size: 3rem; }
+            .full-price { font-size: 3.5rem; }
+            .payment-breakdown { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; align-items: center; }
+            .cta-button { width: 100%; max-width: 300px; margin: 0.5rem 0; }
         }
         
         @media (max-width: 480px) {
-            .domain-main { font-size: 2.8rem; }
-            .info-box, .applications-box { padding: 1.8rem; }
+            .domain-main { font-size: 3.2rem; }
+            .info-box, .applications-box, .purchase-box { padding: 1.8rem; }
             h2 { font-size: 1.8rem; }
-            .cta-section { padding: 2rem; }
+            .full-price { font-size: 2.8rem; }
+            .payment-plan { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -601,33 +761,88 @@
                     <div class="card-desc">Identity and authentication services for bots engaging in commercial transactions</div>
                 </div>
             </div>
-            
-            <h3><i class="fas fa-chart-line"></i> ADDITIONAL SECTORS</h3>
-            <ul class="feature-list">
-                <li><i class="fas fa-mobile-alt"></i> <strong>IoT Device Networks</strong> - Smart devices that pay for services and data</li>
-                <li><i class="fas fa-gamepad"></i> <strong>Gaming Economies</strong> - In-game bots that transact with real-world value</li>
-                <li><i class="fas fa-industry"></i> <strong>Industrial Automation</strong> - Factory robots that purchase maintenance and upgrades</li>
-                <li><i class="fas fa-car"></i> <strong>Autonomous Vehicles</strong> - Self-driving cars paying for charging, tolls, and services</li>
-            </ul>
         </section>
 
-        <section class="cta-section">
-            <h2><i class="fas fa-gem"></i> OWN THE FUTURE OF AUTOMATED COMMERCE</h2>
-            <p>Secure this premium 6-character domain at the intersection of AI, automation, and payments.</p>
+        <section class="purchase-box">
+            <h2><i class="fas fa-shopping-cart"></i> ACQUISITION DETAILS</h2>
             
-            <div class="price">$<span>8,500</span></div>
-            
-            <div class="contact-info">
-                <p><i class="fas fa-envelope"></i> Contact for acquisition: <a href="mailto:joshua369x@gmail.com">joshua369x@gmail.com</a></p>
+            <div class="price-display">
+                <div class="full-price">$<span>14,200</span></div>
+                <div class="payment-plan">Flexible Payment Plan: 4 Payments of $3,550</div>
+                
+                <div class="payment-breakdown">
+                    <div class="payment-phase">
+                        <div class="phase-number">Payment 1</div>
+                        <div class="phase-amount">$3,550</div>
+                    </div>
+                    <div class="payment-phase">
+                        <div class="phase-number">Payment 2</div>
+                        <div class="phase-amount">$3,550</div>
+                    </div>
+                    <div class="payment-phase">
+                        <div class="phase-number">Payment 3</div>
+                        <div class="phase-amount">$3,550</div>
+                    </div>
+                    <div class="payment-phase">
+                        <div class="phase-number">Payment 4</div>
+                        <div class="phase-amount">$3,550</div>
+                    </div>
+                </div>
+                
+                <p><em>No down payment required • Immediate domain access • Full ownership upon final payment</em></p>
+            </div>
+
+            <!-- Spaceship交易框 -->
+            <div class="spaceship-box">
+                <div class="spaceship-header">
+                    <i class="fas fa-rocket"></i>
+                    <div class="spaceship-title">Available on Spaceship.com</div>
+                </div>
+                
+                <p>Secure transaction via Spaceship's trusted platform. Enjoy safe escrow, instant transfer, and professional domain concierge service.</p>
+                
+                <div class="spaceship-link">
+                    <strong>Direct Purchase Link:</strong><br>
+                    <a href="https://www.spaceship.com/domains/bot402.com" target="_blank">https://www.spaceship.com/domains/bot402.com</a>
+                </div>
+                
+                <div class="spaceship-features">
+                    <div class="spaceship-feature">
+                        <i class="fas fa-lock"></i>
+                        <span>Secure Escrow</span>
+                    </div>
+                    <div class="spaceship-feature">
+                        <i class="fas fa-bolt"></i>
+                        <span>Instant Transfer</span>
+                    </div>
+                    <div class="spaceship-feature">
+                        <i class="fas fa-headset"></i>
+                        <span>Customer Support</span>
+                    </div>
+                    <div class="spaceship-feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Transaction Protection</span>
+                    </div>
+                </div>
             </div>
             
-            <a href="mailto:joshua369x@gmail.com" class="cta-button">
-                <i class="fas fa-paper-plane"></i> INQUIRE ABOUT ACQUISITION
-            </a>
+            <div class="contact-info">
+                <p><i class="fas fa-envelope"></i> <strong>Direct inquiries:</strong> Contact for questions or private offers: <a href="mailto:joshua369x@gmail.com">joshua369x@gmail.com</a></p>
+            </div>
+            
+            <div class="button-group">
+                <a href="https://www.spaceship.com/domains/bot402.com" class="cta-button spaceship-button" target="_blank">
+                    <i class="fas fa-rocket"></i> PURCHASE ON SPACESHIP
+                </a>
+                
+                <a href="mailto:joshua369x@gmail.com" class="cta-button">
+                    <i class="fas fa-envelope"></i> CONTACT OWNER
+                </a>
+            </div>
             
             <div class="trust-badges">
-                <div class="badge"><i class="fas fa-shield-alt"></i> Premium Domain</div>
-                <div class="badge"><i class="fasfa-bolt"></i> Future-Proof Concept</div>
+                <div class="badge"><i class="fas fa-gem"></i> Premium Domain</div>
+                <div class="badge"><i class="fas fa-bolt"></i> Future-Proof Concept</div>
                 <div class="badge"><i class="fas fa-code"></i> Technical Edge</div>
                 <div class="badge"><i class="fas fa-chart-line"></i> High Growth Potential</div>
             </div>
